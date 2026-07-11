@@ -4,7 +4,7 @@ Portfolio and personal site.
 
 ## Pages
 
-- **`index.html`** — English portfolio and index page
+- **`index.html`** — English portfolio
 - **`zh.html`** — Chinese portfolio
 
 ## Stack
