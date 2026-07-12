@@ -83,6 +83,22 @@
             opacity: 0.55;
         }
 
+        a[href]::after {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin-left: 3px;
+            content: '';
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXNxdWFyZS1hcnJvdy1vdXQtdXAtcmlnaHQtaWNvbiBsdWNpZGUtc3F1YXJlLWFycm93LW91dC11cC1yaWdodCI+PHBhdGggZD0iTTIxIDEzdjZhMiAyIDAgMCAxLTIgMkg1YTIgMiAwIDAgMS0yLTJWNWEyIDIgMCAwIDEgMi0yaDYiLz48cGF0aCBkPSJtMjEgMy05IDkiLz48cGF0aCBkPSJNMTUgM2g2djYiLz48L3N2Zz4=') no-repeat center/contain;
+            vertical-align: middle;
+            opacity: 0.55;
+        }
+
+        .issue .num a::after,
+        .chrome.top .right a:last-child::after {
+            display: none;
+        }
+
         .chrome.top .rule {
             width: 60px;
             height: 1px;
@@ -95,6 +111,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            pointer-events: none;
         }
 
         .stage {
@@ -145,6 +162,7 @@
             inset: 0;
             animation: spin 60s linear infinite;
             top: -14vh;
+            pointer-events: none;
         }
 
         .ring-labels span {
@@ -292,6 +310,17 @@
             background: rgba(26, 24, 22, 0.25);
         }
 
+        .footer-label {
+            position: absolute;
+            bottom: 28px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            font: 10px/1 var(--mono);
+            color: var(--muted);
+            letter-spacing: 0.18em;
+        }
+
         @keyframes spin {
             to {
                 transform: rotate(360deg);
@@ -353,7 +382,7 @@
             为下一个时代
         </div>
         <div class="issue">
-            <span class="num">→</span>
+            <span class="num"><a href="https://github.com/EdwardJoke" style="color:inherit;text-decoration:none">→</a></span>
             学习 · 探索 · 构建
         </div>
 
@@ -414,6 +443,7 @@
             <span class="line"><span class="accent">新时代</span>的一切</span>
         </div>
         <div class="baseline"></div>
+        <div class="footer-label"><a href="coplex_zh.html" style="color:inherit;text-decoration:none">COPLEX TOWN 2026</a></div>
 
         <div class="chrome bot">
             <div>Edward · 为下一个时代构建工具</div>
