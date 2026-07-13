@@ -1,0 +1,569 @@
+<!doctype html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>九井棋规则 — Ultimate Tic-Tac-Toe</title>
+    <link rel="icon" href="assets/Edward.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Geist+Pixel&display=swap');
+
+        @font-face {
+            font-family: 'Zpix';
+            src: url('https://cdn.jsdelivr.net/npm/zpix-pixel-font@3.1.10/website/zpix.woff2') format('woff2');
+        }
+
+        :root {
+            --paper: #f3eee5;
+            --ink: #1a1816;
+            --muted: #7a766c;
+            --accent: #c0563b;
+            --serif: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+            --mono: 'Geist Pixel', ui-monospace, monospace;
+            --zpix: 'Zpix', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+        }
+
+        body {
+            background: var(--paper);
+            color: var(--ink);
+            font: 14px/1.7 -apple-system, system-ui, sans-serif;
+        }
+
+        main {
+            position: relative;
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 50% 50%, rgba(26, 24, 22, 0.04), transparent 70%),
+                radial-gradient(circle, rgba(26, 24, 22, 0.10) 1px, transparent 1.4px) 0 0 / 28px 28px,
+                var(--paper);
+            font-variation-settings: "ELSH" 1;
+        }
+
+        .chrome {
+            position: absolute;
+            left: 36px;
+            right: 36px;
+            font: 10px/1.4 var(--mono);
+            color: var(--muted);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+        }
+
+        .chrome.top {
+            top: 28px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chrome.top .right {
+            display: flex;
+            align-items: center;
+            gap: 22px;
+        }
+
+        .chrome.top .right a {
+            transition: opacity 0.2s;
+        }
+
+        .chrome.top .right a:hover {
+            opacity: 0.55;
+        }
+
+        a[href]::after {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            margin-left: 3px;
+            content: '';
+            background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXNxdWFyZS1hcnJvdy1vdXQtdXAtcmlnaHQtaWNvbiBsdWNpZGUtc3F1YXJlLWFycm93LW91dC11cC1yaWdodCI+PHBhdGggZD0iTTIxIDEzdjZhMiAyIDAgMCAxLTIgMkg1YTIgMiAwIDAgMS0yLTJWNWEyIDIgMCAwIDEgMi0yaDYiLz48cGF0aCBkPSJtMjEgMy05IDkiLz48cGF0aCBkPSJNMTUgM2g2djYiLz48L3N2Zz4=') no-repeat center/contain;
+            vertical-align: middle;
+            opacity: 0.55;
+        }
+
+        .chrome.top .right a:last-child::after {
+            display: none;
+        }
+
+        .chrome.top .rule {
+            width: 60px;
+            height: 1px;
+            background: var(--ink);
+            opacity: 0.6;
+        }
+
+        .hero {
+            padding: 96px 56px 48px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font: clamp(28px, 4vw, 48px)/1.15 var(--serif);
+            font-style: italic;
+            letter-spacing: -0.005em;
+            margin: 0 0 8px;
+            animation: type-in 1s cubic-bezier(.2, .7, .2, 1) both;
+        }
+
+        .hero .sub {
+            font: 10px/1.4 var(--mono);
+            color: var(--muted);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 24px;
+        }
+
+        .hero .deck {
+            font-size: 15px;
+            color: var(--muted);
+            line-height: 1.6;
+            margin-bottom: 32px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(26, 24, 22, 0.15);
+        }
+
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 56px 120px;
+        }
+
+        .content h2 {
+            font: clamp(18px, 2.5vw, 26px)/1.3 var(--serif);
+            font-style: italic;
+            margin: 48px 0 12px;
+            color: var(--ink);
+            letter-spacing: -0.005em;
+        }
+
+        .content h2 .num {
+            font: 14px/1 var(--mono);
+            font-style: normal;
+            color: var(--accent);
+            display: inline-block;
+            margin-right: 8px;
+            letter-spacing: 0.12em;
+        }
+
+        .content h3 {
+            font: 12px/1.4 var(--mono);
+            color: var(--muted);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin: 36px 0 8px;
+        }
+
+        .content p {
+            margin: 0 0 16px;
+            color: var(--ink);
+        }
+
+        .content .rule-card {
+            background: rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(26, 24, 22, 0.10);
+            border-radius: 6px;
+            padding: 20px 24px;
+            margin: 16px 0 24px;
+        }
+
+        .content .rule-card .label {
+            font: 9px/1.3 var(--mono);
+            color: var(--accent);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .content .rule-card p {
+            margin: 0;
+        }
+
+        .content .rule-card p+p {
+            margin-top: 12px;
+        }
+
+        .content ol {
+            padding-left: 20px;
+            margin: 12px 0 24px;
+        }
+
+        .content ol li {
+            margin-bottom: 10px;
+            padding-left: 6px;
+        }
+
+        .content ol li strong {
+            color: var(--accent);
+            font-family: var(--mono);
+            font-weight: 400;
+            letter-spacing: 0.06em;
+        }
+
+        .board-diagram {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            width: 240px;
+            margin: 20px auto;
+            background: rgba(26, 24, 22, 0.10);
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .board-diagram .mini {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            background: var(--paper);
+            aspect-ratio: 1;
+            padding: 4px;
+            border-radius: 2px;
+        }
+
+        .board-diagram .mini .cell {
+            aspect-ratio: 1;
+            background: rgba(26, 24, 22, 0.06);
+            border-radius: 1px;
+        }
+
+        .board-diagram .mini .cell.x {
+            background: var(--accent);
+            opacity: 0.7;
+        }
+
+        .board-diagram .mini .cell.o {
+            background: var(--ink);
+            opacity: 0.5;
+            border-radius: 50%;
+        }
+
+        .board-diagram .mini.won {
+            background: var(--accent);
+        }
+
+        .board-diagram .mini.won .cell {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .board-diagram .mini.won .cell.x {
+            background: #fff;
+            opacity: 0.9;
+        }
+
+        .board-diagram .mini.tie {
+            background: rgba(26, 24, 22, 0.15);
+        }
+
+        .board-diagram .mini.tie .cell {
+            background: rgba(26, 24, 22, 0.08);
+        }
+
+        .board-diagram .mini.highlight {
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .diagram-label {
+            text-align: center;
+            font: 9px/1.3 var(--mono);
+            color: var(--muted);
+            letter-spacing: 0.12em;
+            margin: 8px 0 20px;
+        }
+
+        .outcome {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin: 20px auto;
+        }
+
+        .outcome .big-row {
+            display: flex;
+            gap: 4px;
+        }
+
+        .outcome .big-cell {
+            width: 60px;
+            height: 60px;
+            background: rgba(26, 24, 22, 0.06);
+            border-radius: 3px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2px;
+            padding: 4px;
+        }
+
+        .outcome .big-cell .dot {
+            background: rgba(26, 24, 22, 0.08);
+            border-radius: 1px;
+        }
+
+        .outcome .big-cell.win-x {
+            background: var(--accent);
+        }
+
+        .outcome .big-cell.win-x .dot {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .outcome .big-cell.win-o .dot {
+            background: var(--ink);
+            border-radius: 50%;
+        }
+
+        .outcome .big-cell.tie-bg {
+            background: rgba(26, 24, 22, 0.15);
+        }
+
+        .outcome .arrow {
+            display: flex;
+            align-items: center;
+            font: 18px/1 var(--serif);
+            color: var(--muted);
+        }
+
+        .play-link {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 10px 24px;
+            background: var(--ink);
+            color: var(--paper);
+            font: 10px/1 var(--mono);
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: opacity 0.2s;
+        }
+
+        .play-link:hover {
+            opacity: 0.8;
+        }
+
+        .rule-card .play-link {
+            margin-top: 12px;
+        }
+
+        .baseline {
+            height: 1px;
+            background: rgba(26, 24, 22, 0.25);
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0;
+        }
+
+        .footer-label {
+            text-align: center;
+            padding: 28px 0 32px;
+            font: 10px/1 var(--mono);
+            color: var(--muted);
+            letter-spacing: 0.18em;
+        }
+
+        .footer-label a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        @keyframes type-in {
+            from {
+                opacity: 0;
+                letter-spacing: 0.06em;
+            }
+            to {
+                opacity: 1;
+                letter-spacing: -0.005em;
+            }
+        }
+
+        @media (max-width: 900px) {
+            .hero {
+                padding: 96px 20px 32px;
+            }
+            .content {
+                padding: 0 20px 80px;
+            }
+            .chrome {
+                left: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <div class="chrome top">
+            <div>EDWARD — 2026 · PORTFOLIO</div>
+            <div class="right">
+                <div class="rule"></div><a href="ntc_zh.html" style="color:inherit;text-decoration:none">游戏</a><a href="ntcr.html" style="color:inherit;text-decoration:none;font-family:'Zpix',monospace;letter-spacing:0">EN</a>
+            </div>
+        </div>
+
+        <div class="hero">
+            <div class="sub">RULES · 规则</div>
+            <h1>九井棋规则</h1>
+            <p class="deck">
+                九井棋是传统井字棋的升级和更复杂版本，它以简单的规则和战略复杂性而闻名。
+                每一步都需要更深入的思考和详细的计划。两名玩家可以玩这个游戏：可以是两个个人，
+                两个玩家团队，或者一个人对抗电脑。
+            </p>
+        </div>
+
+        <div class="content">
+
+            <h2>棋盘概述</h2>
+            <p>
+                九井棋由一个大的 3×3 全局棋盘组成，每个格子都包含一个更小的 3×3 迷你棋盘。
+                游戏总共有 3×3×3×3 = <strong>81</strong> 个格子。
+            </p>
+
+            <div class="board-diagram">
+                <div class="mini">
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+                <div class="mini">
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+                <div class="mini">
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+                <div class="mini">
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+                <div class="mini highlight">
+                    <div class="cell x"></div><div class="cell o"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell x"></div><div class="cell o"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell x"></div>
+                </div>
+                <div class="mini">
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+                <div class="mini">
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+                <div class="mini">
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+                <div class="mini">
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+                </div>
+            </div>
+            <div class="diagram-label">每个迷你棋盘获胜后标记为占领</div>
+
+            <h2>基本规则</h2>
+
+            <div class="rule-card">
+                <div class="label">规则 1 · 先手</div>
+                <p>首次移动可以通过掷骰子或抛硬币来决定，或者玩家可以口头协商。在后续游戏中，先手权逐个传给玩家。</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="label">规则 2 · 首次移动</div>
+                <p>游戏开始时，玩家可以在 81 个空格中的任何一个进行移动。</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="label">规则 3 · 送棋盘</div>
+                <p>这个移动将对手"送"到对应的迷你棋盘。例如，如果 X 在大棋盘的左下角移动，并在其中移动到迷你棋盘的右下方格子，那么 O 必须在大棋盘右下角的任何一个方格中进行下一步移动。</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="label">规则 4 · 轮流</div>
+                <p>作为回应，O 将对手"送"到他们选择的迷你棋盘，轮流继续。</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="label">规则 5 · 占领迷你棋盘</div>
+                <p>当玩家在特定迷你棋盘中连成三个一排时，该迷你棋盘被视为被占领。</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="label">规则 6 · 平局</div>
+                <p>如果迷你棋盘上出现平局，它将被视为和局，不会构成大棋盘上任何三连排的一部分。</p>
+            </div>
+
+            <div class="rule-card">
+                <div class="label">规则 7 · 自由移动</div>
+                <p>如果一名玩家被"送"到已经有胜利声明或出现平局的迷你棋盘，他们可以在大棋盘上选择任何可用的空间进行移动。</p>
+            </div>
+
+            <h2>游戏结果</h2>
+
+            <div class="rule-card">
+                <div class="label">胜利条件</div>
+                <p>如果玩家在大棋盘上排成一行占领了三个迷你棋盘，则获得胜利。</p>
+            </div>
+
+            <div class="outcome">
+                <div class="big-row">
+                    <div class="big-cell win-x">
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    </div>
+                    <div class="big-cell win-x">
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    </div>
+                    <div class="big-cell win-x">
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                        <div class="dot"></div><div class="dot"></div><div class="dot"></div>
+                    </div>
+                </div>
+                <div class="arrow">→</div>
+                <div class="big-row">
+                    <div class="big-cell win-x" style="opacity:0.3"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="big-cell win-x"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                    <div class="big-cell" style="opacity:0.3"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+                </div>
+            </div>
+            <div class="diagram-label">X 赢得一行 → 胜利</div>
+
+            <div class="rule-card">
+                <div class="label">平局</div>
+                <p>如果没有玩家在大棋盘上排成一行，游戏被视为平局。</p>
+            </div>
+
+            <h2>迈向胜利！</h2>
+            <p>
+                如果你已经成功掌握了这些九井棋规则，现在是时候在实践中磨练你的技能了！
+            </p>
+            <a class="play-link" href="ntc_zh.html">开始游戏 →</a>
+        </div>
+
+        <div class="baseline" style="max-width:800px;margin:0 auto"></div>
+        <div class="footer-label"><a href="index.html">← BACK TO HOME</a></div>
+    </main>
+</body>
+
+</html>
