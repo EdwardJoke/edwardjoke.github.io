@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Profile Builder — Edward</title>
+    <link rel="icon" href="assets/Edward.png">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js">
+    </script>
+    <link rel="stylesheet" href="assets/profile.css">
+</head>
+
+<body>
+    <main>
+        <div class="chrome top">
+            <div>EDWARD — 2026 · TOOLS</div>
+            <div class="right">
+                <div class="rule"></div><a href="index.html" style="color:inherit;text-decoration:none">HOME</a><a
+                    href="https://github.com/EdwardJoke"
+                    style="color:inherit;text-decoration:none">GITHUB</a>
+            </div>
+        </div>
+
+        <div class="meta-tl">
+            <b>PROFILE BUILDER</b>
+            PUBLIC TOOL
+        </div>
+        <div class="issue">
+            <span class="num">ø</span>
+            LIVE PREVIEW
+        </div>
+
+        <div class="stage">
+            <div class="container">
+                <div class="preview">
+                    <div class="avatar-wrap">
+                        <img id="avatar" src="" alt="avatar" crossorigin="anonymous" />
+                    </div>
+                    <h1 class="profile-name" id="displayName">Your Name</h1>
+                    <p class="profile-bio" id="displayBio">Write something about yourself.</p>
+                    <div class="profile-links" id="displayLinks"></div>
+                    <div class="toolbar">
+                        <button id="resetBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="1 4 1 10 7 10" />
+                                <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10" />
+                            </svg>
+                            Reset
+                        </button>
+                        <button id="exportBtn">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                                <polyline points="7 10 12 15 17 10" />
+                                <line x1="12" y1="15" x2="12" y2="3" />
+                            </svg>
+                            Export
+                        </button>
+                    </div>
+                </div>
+
+                <div class="divider"></div>
+
+                <div class="form-section">
+                    <div class="form-grid">
+                        <div class="form-group full">
+                            <label for="inputName">Name</label>
+                            <input id="inputName" type="text" placeholder="Your Name" spellcheck="false" />
+                        </div>
+                        <div class="form-group full">
+                            <label for="inputBio">Bio</label>
+                            <textarea id="inputBio" placeholder="Write something about yourself..." maxlength="160"></textarea>
+                            <div class="char-count"><span id="bioCount">0</span>/160</div>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputGh">GitHub</label>
+                            <input id="inputGh" type="text" placeholder="https://github.com/username" spellcheck="false" />
+                        </div>
+                        <div class="form-group">
+                            <label for="inputX">X / Twitter</label>
+                            <input id="inputX" type="text" placeholder="https://x.com/username" spellcheck="false" />
+                        </div>
+                        <div class="form-group">
+                            <label for="inputBs">Bluesky</label>
+                            <input id="inputBs" type="text" placeholder="https://bsky.app/profile/username" spellcheck="false" />
+                        </div>
+                        <div class="form-group">
+                            <label for="inputMs">Mastodon</label>
+                            <input id="inputMs" type="text" placeholder="https://mastodon.social/@username" spellcheck="false" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="headline">
+            <span class="em">Type</span> above, preview <span class="accent">instantly.</span>
+        </div>
+        <div class="baseline"></div>
+        <div class="footer-label"><a href="index.html" style="color:inherit;text-decoration:none">HOME</a></div>
+
+        <div class="chrome bot">
+            <div>EDWARD · BUILDING TOOLS FOR THE NEXT ERA</div>
+            <div><a href="index.html" style="color:inherit;text-decoration:none">HOME</a></div>
+        </div>
+    </main>
+
+    <div class="overlay" id="exportOverlay">
+        <div class="modal">
+            <button class="modal-close" id="exportClose">✕</button>
+            <h2>ø Export Profile</h2>
+            <div class="export-tabs">
+                <button class="active" data-pane="html">Embed HTML</button>
+                <button data-pane="md">Markdown</button>
+                <button data-pane="png">PNG</button>
+            </div>
+
+            <div class="export-pane active" id="paneHtml">
+                <pre id="htmlSnippet"></pre>
+                <button class="copy-btn" data-target="html">Copy HTML</button>
+            </div>
+
+            <div class="export-pane" id="paneMd">
+                <pre id="mdSnippet"></pre>
+                <button class="copy-btn" data-target="md">Copy Markdown</button>
+            </div>
+
+            <div class="export-pane" id="panePng">
+                <div class="png-area">
+                    <button class="copy-btn" id="downloadPng">Download PNG</button>
+                    <div class="note">Captures the profile card as a PNG image.</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script src="assets/profile.js"></script>
+</body>
+
+</html>

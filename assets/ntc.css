@@ -1,0 +1,522 @@
+@import url('https://fonts.googleapis.com/css2?family=Geist+Pixel&display=swap');
+
+@font-face {
+    font-family: 'Zpix';
+    src: url('https://cdn.jsdelivr.net/npm/zpix-pixel-font@3.1.10/website/zpix.woff2') format('woff2');
+}
+
+:root {
+    --paper: #f3eee5;
+    --ink: #1a1816;
+    --muted: #7a766c;
+    --accent: #c0563b;
+    --serif: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+    --mono: 'Geist Pixel', ui-monospace, monospace;
+}
+
+* {
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body {
+    margin: 0;
+    height: 100%;
+}
+
+body {
+    background: var(--paper);
+    color: var(--ink);
+    font: 14px/1.5 -apple-system, system-ui, sans-serif;
+    overflow: hidden;
+}
+
+main {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    background:
+        radial-gradient(circle at 50% 50%, rgba(26, 24, 22, 0.04), transparent 70%),
+        radial-gradient(circle, rgba(26, 24, 22, 0.10) 1px, transparent 1.4px) 0 0 / 28px 28px,
+        var(--paper);
+    overflow: hidden;
+    font-variation-settings: "ELSH" 1;
+}
+
+.chrome {
+    position: absolute;
+    left: 36px;
+    right: 36px;
+    font: 10px/1.4 var(--mono);
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    z-index: 10;
+}
+
+.chrome.top {
+    top: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chrome.top .right {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+}
+
+.chrome.top .right a {
+    transition: opacity 0.2s;
+}
+
+.chrome.top .right a:hover {
+    opacity: 0.55;
+}
+
+a[href] {
+    touch-action: manipulation;
+}
+
+a[href]::after {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    margin-left: 3px;
+    content: '';
+    background: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLXNxdWFyZS1hcnJvdy1vdXQtdXAtcmlnaHQtaWNvbiBsdWNpZGUtc3F1YXJlLWFycm93LW91dC11cC1yaWdodCI+PHBhdGggZD0iTTIxIDEzdjZhMiAyIDAgMCAxLTIgMkg1YTIgMiAwIDAgMS0yLTJWNWEyIDIgMCAwIDEgMi0yaDYiLz48cGF0aCBkPSJtMjEgMy05IDkiLz48cGF0aCBkPSJNMTUgM2g2djYiLz48L3N2Zz4=') no-repeat center/contain;
+    vertical-align: middle;
+    opacity: 0.55;
+}
+
+.chrome.top .right a:last-child::after {
+    display: none;
+}
+
+.chrome.top .rule {
+    width: 60px;
+    height: 1px;
+    background: var(--ink);
+    opacity: 0.6;
+}
+
+.chrome.bot {
+    bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    pointer-events: none;
+}
+
+.chrome.bot a {
+    pointer-events: auto;
+}
+
+.game-wrap {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.status {
+    font: clamp(16px, 2.5vw, 28px)/1.2 var(--serif);
+    font-style: italic;
+    letter-spacing: -0.005em;
+    margin-bottom: 14px;
+    text-align: center;
+    transition: opacity 0.3s;
+}
+
+.status .accent {
+    color: var(--accent);
+}
+
+.status .mute {
+    font: 10px/1.4 var(--mono);
+    font-style: normal;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    display: block;
+    margin-top: 4px;
+}
+
+.board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 6px;
+    width: min(56vh, 56vw, 520px);
+    aspect-ratio: 1;
+    position: relative;
+}
+
+.board.disabled {
+    pointer-events: none;
+}
+
+.mini {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: rgba(26, 24, 22, 0.08);
+    padding: 4px;
+    border-radius: 3px;
+    position: relative;
+    transition: background 0.25s;
+}
+
+.mini.active {
+    background: rgba(192, 86, 59, 0.15);
+    box-shadow: 0 0 0 2px var(--accent);
+}
+
+.cell {
+    aspect-ratio: 1;
+    background: var(--paper);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: background 0.15s;
+    user-select: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.cell::after {
+    content: attr(data-mark);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: clamp(9px, 1.1vw, 16px)/1 var(--mono);
+    color: var(--ink);
+}
+
+.cell.x::after {
+    color: var(--accent);
+}
+
+.cell.o::after {
+    color: var(--ink);
+}
+
+.cell:hover:not(.set) {
+    background: rgba(192, 86, 59, 0.10);
+}
+
+.cell.set {
+    cursor: default;
+}
+
+.mini.won-x {
+    background: var(--accent);
+}
+
+.mini.won-x .cell,
+.mini.won-o .cell {
+    opacity: 0;
+}
+
+.mini.won-x::after,
+.mini.won-o::after {
+    content: attr(data-mark);
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font: clamp(14px, 2vw, 28px)/1 var(--mono);
+    color: var(--paper);
+}
+
+.mini.won-o::after {
+    color: var(--ink);
+}
+
+.mini.won-o {
+    background: rgba(26, 24, 22, 0.12);
+}
+
+.mini.draw {
+    background: rgba(26, 24, 22, 0.06);
+}
+
+.mini.draw .cell {
+    opacity: 0.2;
+}
+
+.controls {
+    margin-top: 16px;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.controls a,
+.controls button {
+    font: 10px/1 var(--mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 3px;
+    transition: opacity 0.2s;
+    text-decoration: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.controls a:hover,
+.controls button:hover {
+    opacity: 0.65;
+}
+
+.controls .btn-ink {
+    background: var(--ink);
+    color: var(--paper);
+    border-radius: 4px;
+}
+
+.controls .btn-ink:hover {
+    opacity: 0.85;
+}
+
+.mode-toggle {
+    display: flex;
+    border: 1px solid rgba(26, 24, 22, 0.18);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 14px;
+}
+
+.mode-toggle button {
+    font: 9px/1 var(--mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border: none;
+    background: none;
+    color: var(--muted);
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+}
+
+.mode-toggle button.active {
+    background: var(--ink);
+    color: var(--paper);
+}
+
+.mode-toggle button:not(.active):hover {
+    background: rgba(26, 24, 22, 0.06);
+}
+
+.win-overlay {
+    display: none;
+    position: absolute;
+    inset: 0;
+    background: rgba(243, 238, 229, 0.88);
+    z-index: 5;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+}
+
+.win-overlay.show {
+    display: flex;
+}
+
+.win-overlay .text {
+    font: clamp(24px, 4vw, 48px)/1.1 var(--serif);
+    font-style: italic;
+    letter-spacing: -0.005em;
+    margin-bottom: 16px;
+    animation: type-in 0.8s cubic-bezier(.2, .7, .2, 1) both;
+}
+
+.win-overlay .sub {
+    font: 10px/1.4 var(--mono);
+    color: var(--muted);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.win-overlay .overlay-btn {
+    margin-top: 24px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    border-radius: 4px;
+    padding: 10px 24px;
+    font: 10px/1 var(--mono);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.win-overlay .overlay-btn:hover {
+    opacity: 0.85;
+}
+
+@keyframes type-in {
+    from {
+        opacity: 0;
+        letter-spacing: 0.06em;
+    }
+    to {
+        opacity: 1;
+        letter-spacing: -0.005em;
+    }
+}
+
+@media (max-width: 900px) {
+    .chrome {
+        left: 20px;
+        right: 20px;
+    }
+    .board {
+        width: min(44vh, 72vw);
+    }
+}
+
+@media (max-width: 600px) {
+    main {
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body {
+        overflow: auto;
+    }
+
+    .chrome {
+        left: 14px;
+        right: 14px;
+        font-size: 8px;
+    }
+
+    .chrome.top .right {
+        gap: 8px;
+    }
+
+    .chrome.top .rule {
+        width: 20px;
+    }
+
+    .game-wrap {
+        padding-top: 66px;
+        padding-bottom: 50px;
+    }
+
+    .status {
+        font-size: clamp(14px, 4vw, 18px);
+        margin-bottom: 8px;
+    }
+
+    .mode-toggle {
+        margin-bottom: 10px;
+    }
+
+    .mode-toggle button {
+        font-size: 9px;
+        padding: 6px 12px;
+    }
+
+    .board {
+        width: min(88vw, 56vh);
+        gap: 4px;
+    }
+
+    .mini {
+        padding: 3px;
+        gap: 2px;
+    }
+
+    .cell::after {
+        font-size: clamp(10px, 2.5vw, 14px);
+    }
+
+    .controls {
+        margin-top: 10px;
+    }
+
+    .controls a,
+    .controls button {
+        padding: 8px 14px;
+        font-size: 9px;
+    }
+
+    .chrome.bot {
+        bottom: 20px;
+        font-size: 8px;
+    }
+}
+
+@media (max-height: 700px) {
+    .board {
+        width: min(50vw, 44vh);
+    }
+    .status {
+        font-size: clamp(12px, 2.4vw, 16px);
+        margin-bottom: 6px;
+    }
+    .controls {
+        margin-top: 6px;
+    }
+    .controls a,
+    .controls button {
+        padding: 6px 12px;
+    }
+}
+
+@media (max-height: 500px) {
+    .board {
+        width: min(56vw, 38vh);
+        gap: 3px;
+    }
+
+    .mini {
+        gap: 1px;
+        padding: 2px;
+    }
+
+    .cell::after {
+        font-size: clamp(8px, 1.8vw, 11px);
+    }
+
+    .status {
+        font-size: clamp(11px, 2.2vw, 14px);
+        margin-bottom: 3px;
+    }
+
+    .mode-toggle {
+        margin-bottom: 4px;
+    }
+
+    .mode-toggle button {
+        font-size: 8px;
+        padding: 4px 8px;
+    }
+
+    .controls {
+        margin-top: 3px;
+    }
+
+    .controls a,
+    .controls button {
+        padding: 5px 10px;
+        font-size: 8px;
+    }
+}
